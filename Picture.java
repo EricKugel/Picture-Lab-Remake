@@ -348,11 +348,12 @@ public class Picture extends SimplePicture {
    */
   public void change2() {
     Pixel[][] pixels = getPixels2D();
+    int rowSize = getExplorer().inputInt("Enter a row size");
     for (int row = 0; row < pixels.length; row++) {
       for (int col = 0; col < pixels[0].length; col++) {
-        if (row % 100 < 33) {
+        if (row % (rowSize * 3) < rowSize) {
           pixels[row][col].setRed(0);
-        } else if (row % 100 < 66) {
+        } else if (row % (rowSize * 3) < rowSize * 2) {
           pixels[row][col].setGreen(0);
         } else {
           pixels[row][col].setBlue(0);

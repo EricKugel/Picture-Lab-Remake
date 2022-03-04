@@ -9,8 +9,9 @@ public class PictureTester {
    * Main method for testing.
    */
   public static void main(String[] args) {
-    Picture pic = new Picture("Chapter-6-Extension/images/beach.jpg");
+    Picture pic = new Picture("images/beach.jpg");
     pic.explore();
+    pic.getExplorer().log("Pick a method to test");
   }
 
   public static void run(String method) {
@@ -55,7 +56,7 @@ public class PictureTester {
    * Tests zeroBlue method.
    */
   private static void testZeroBlue() {
-    Picture pic = new Picture("Chapter-6-Extension/images/beach.jpg");
+    Picture pic = new Picture("images/beach.jpg");
     pic.explore(); // displays original picture
     pic.zeroBlue();
     pic.explore(); // displays picture revised by zeroBlue method
@@ -65,7 +66,7 @@ public class PictureTester {
    * Tests keepOnlyBlue method.
    */
   private static void testKeepOnlyBlue() {
-    Picture pic = new Picture("Chapter-6-Extension/images/beach.jpg");
+    Picture pic = new Picture("images/beach.jpg");
     pic.explore(); // displays original picture
     pic.keepOnlyBlue();
     pic.explore(); // displays picture revised by keepOnlyBlue method
@@ -75,7 +76,7 @@ public class PictureTester {
    * Tests negate method.
    */
   private static void testNegate() {
-    Picture pic = new Picture("Chapter-6-Extension/images/gorge.jpg");
+    Picture pic = new Picture("images/gorge.jpg");
     pic.explore(); // displays original picture
     pic.negate();
     pic.explore(); // displays picture revised by negate method
@@ -85,7 +86,7 @@ public class PictureTester {
    * Tests grayscale method.
    */
   private static void testGrayscale() {
-    Picture pic = new Picture("Chapter-6-Extension/images/arch.jpg");
+    Picture pic = new Picture("images/arch.jpg");
     pic.explore(); // displays original picture
     pic.grayscale();
     pic.explore(); // displays picture revised by grayscale method
@@ -95,7 +96,7 @@ public class PictureTester {
    * Tests fixUnderwater method.
    */
   private static void testFixUnderwater() {
-    Picture pic = new Picture("Chapter-6-Extension/images/water.jpg");
+    Picture pic = new Picture("images/water.jpg");
     pic.explore(); // displays original picture
     pic.fixUnderwater();
     pic.explore(); // displays picture revised by fixUnderwater method
@@ -107,7 +108,7 @@ public class PictureTester {
    * Tests mirrorVerticalLeftToRight method.
    */
   private static void testMirrorVerticalLeftToRight() {
-    Picture pic = new Picture("Chapter-6-Extension/images/caterpillar.jpg");
+    Picture pic = new Picture("images/caterpillar.jpg");
     pic.explore(); // displays original picture
     pic.mirrorVerticalLeftToRight();
     pic.explore(); // displays picture revised by mirrorVertical method
@@ -117,7 +118,7 @@ public class PictureTester {
    * Tests mirrorVerticalRightToLeft method.
    */
   private static void testMirrorVerticalRightToLeft() {
-    Picture pic = new Picture("Chapter-6-Extension/images/koala.jpg");
+    Picture pic = new Picture("images/koala.jpg");
     pic.explore(); // displays original picture
     pic.mirrorVerticalRightToLeft();
     pic.explore(); // displays picture revised by mirrorVerticalRightToLeft method
@@ -127,7 +128,7 @@ public class PictureTester {
    * Tests mirrorHorizontalTopToBottom method.
    */
   private static void testMirrorHorizontalTopToBottom() {
-    Picture pic = new Picture("Chapter-6-Extension/images/redMotorcycle.jpg");
+    Picture pic = new Picture("images/redMotorcycle.jpg");
     pic.explore(); // displays original picture
     pic.mirrorHorizontalTopToBottom();
     pic.explore(); // displays picture revised by mirrorHorizontalTopToBottom method
@@ -137,7 +138,7 @@ public class PictureTester {
    * Tests mirrorHorizontalBottomToTop method.
    */
   private static void testMirrorHorizontalBottomToTop() {
-    Picture pic = new Picture("Chapter-6-Extension/images/redMotorcycle.jpg");
+    Picture pic = new Picture("images/redMotorcycle.jpg");
     pic.explore(); // displays original picture
     pic.mirrorHorizontalBottomToTop();
     pic.explore(); // displays picture revised by mirrorHorizontalBottomToTop method
@@ -147,11 +148,11 @@ public class PictureTester {
    * Tests mirrorDiagonal method.
    */
   private static void testMirrorDiagonal() {
-    Picture pic = new Picture("Chapter-6-Extension/images/beach.jpg");
+    Picture pic = new Picture("images/beach.jpg");
     pic.explore(); // displays original picture
     pic.mirrorDiagonal();
     pic.explore(); // displays picture revised by mirrorDiagonal method
-    pic = new Picture("Chapter-6-Extension/images/butterfly.jpg");
+    pic = new Picture("images/butterfly.jpg");
     pic.explore(); // displays original picture
     pic.mirrorDiagonal();
     pic.explore(); // displays picture revised by mirrorDiagonal method
@@ -163,7 +164,7 @@ public class PictureTester {
    * Tests mirrorTemple method.
    */
   private static void testMirrorTemple() {
-    Picture pic = new Picture("Chapter-6-Extension/images/temple.jpg");
+    Picture pic = new Picture("images/temple.jpg");
     pic.explore(); // displays original picture
     pic.mirrorTemple();
     pic.explore(); // displays picture revised by mirrorTemple method
@@ -173,7 +174,7 @@ public class PictureTester {
    * Tests mirrorTemple method.
    */
   private static void testMirrorArms() {
-    Picture pic = new Picture("Chapter-6-Extension/images/snowman.jpg");
+    Picture pic = new Picture("images/snowman.jpg");
     pic.explore(); // displays original picture
     pic.mirrorArms();
     pic.explore(); // displays picture revised by mirrorArms method
@@ -183,7 +184,7 @@ public class PictureTester {
    * Tests mirrorSwan method.
    */
   private static void testMirrorSwan() {
-    Picture pic = new Picture("Chapter-6-Extension/images/swan.jpg");
+    Picture pic = new Picture("images/swan.jpg");
     pic.explore(); // displays original picture
     pic.mirrorSwan();
     pic.explore(); // displays picture revised by mirrorSwan method
@@ -195,7 +196,7 @@ public class PictureTester {
    * Tests change1 method.
    */
   private static void testChange1() {
-    Picture pic = new Picture("Chapter-6-Extension/images/beach.jpg");
+    Picture pic = new Picture("images/beach.jpg");
     pic.change1();
     pic.explore();
   }
@@ -204,7 +205,7 @@ public class PictureTester {
    * Tests change2 method.
    */
   private static void testChange2() {
-    Picture pic = new Picture("Chapter-6-Extension/images/butterfly.jpg");
+    Picture pic = new Picture("images/butterfly.jpg");
     pic.explore();
     pic.change2();
     pic.explore();
@@ -214,7 +215,7 @@ public class PictureTester {
    * Tests change3 method.
    */
   private static void testChange3() {
-    Picture pic = new Picture("Chapter-6-Extension/images/whiteFlower.jpg");
+    Picture pic = new Picture("images/whiteFlower.jpg");
     pic.explore();
     pic.change3();
     pic.explore();
@@ -224,7 +225,7 @@ public class PictureTester {
    * Tests change4 method.
    */
   private static void testChange4() {
-    Picture pic = new Picture("Chapter-6-Extension/images/beach.jpg");
+    Picture pic = new Picture("images/beach.jpg");
     pic.explore();
     pic.change4();
     pic.explore();
@@ -234,7 +235,7 @@ public class PictureTester {
    * Tests change5 method.
    */
   private static void testChange5() {
-    Picture pic = new Picture("Chapter-6-Extension/images/redMotorcycle.jpg");
+    Picture pic = new Picture("images/redMotorcycle.jpg");
     pic.explore();
     pic.change5();
     pic.explore();

@@ -37,6 +37,8 @@ public class SimplePicture implements DigitalPicture {
    * extension for this file (jpg or bmp)
    */
   private String extension;
+
+  private PictureExplorerAndTester explorer;
   
   /**
    * Default constructor creates a picture with a width of 200 and a height of 100 
@@ -116,6 +118,10 @@ public class SimplePicture implements DigitalPicture {
     title = "None";
     fileName = "None";
     extension = "jpg";
+  }
+
+  public PictureExplorerAndTester getExplorer() {
+    return explorer;
   }
   
   /**
@@ -401,7 +407,7 @@ public class SimplePicture implements DigitalPicture {
    */
   public void explore() {
     // creates a copy of the current picture and explores it
-    new PictureExplorer(new SimplePicture(this));
+    this.explorer = new PictureExplorerAndTester(new SimplePicture(this));
   }
   
   /**
