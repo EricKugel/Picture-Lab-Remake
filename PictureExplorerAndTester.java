@@ -22,7 +22,6 @@ import javax.swing.border.*;
  * @author Eric Kugel erickugel713@gmail.com
  */
 public class PictureExplorerAndTester implements MouseMotionListener, ActionListener, MouseListener {
-
   private int rowIndex = 0;
   private int colIndex = 0;
   
@@ -159,6 +158,11 @@ public class PictureExplorerAndTester implements MouseMotionListener, ActionList
     scrollPane.setViewportView(imageDisplay);
     pictureFrame.getContentPane().add(scrollPane, BorderLayout.CENTER);
   }
+
+  public void setImage(Picture picture) {
+    this.picture = picture;
+    createAndInitScrollingImage();
+  }
   
   /**
    * Creates the JFrame and sets everything up.
@@ -171,7 +175,7 @@ public class PictureExplorerAndTester implements MouseMotionListener, ActionList
     createAndInitInputBox();
     
     String pictureName = picture.getFileName().substring(picture.getFileName().lastIndexOf("/") + 1);
-    inputPanel.add(new JLabel("<html>Viewing " + pictureName + "</html>"));
+    log("Viewing " + pictureName);
 
     pictureFrame.pack();
     pictureFrame.setVisible(true);
@@ -308,20 +312,19 @@ public class PictureExplorerAndTester implements MouseMotionListener, ActionList
 
   public String input(String prompt) {
     log(prompt);
-    JTextField inputField = new JTextField();
-    inputPanel.add(inputField);
     CountDownLatch latch = new CountDownLatch(1);
-    inputField.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-            latch.countDown();
-        }
-    });
+    JTextField textField = new JTextField();
+    InputField inputField = new InputField(latch, textField);
+    inputField.start();
+    inputPanel.add(textField);
+    repaint();
     try {
       latch.await();
-    } catch(InterruptedException e) {
-        e.printStackTrace();
+    } catch(Exception e) {
+      e.printStackTrace();
     }
-    return inputField.getText().strip();
+    return inputField.getText();
+    // return "30";
   }
 
   public double inputDouble(String prompt) {
@@ -706,15 +709,5 @@ public class PictureExplorerAndTester implements MouseMotionListener, ActionList
     public Component getFirstComponent(Container focusCycleRoot) {
       return colValue;
     }
-  }
-  
-  /**
-   * Main method to test a Picture object.
-   * 
-   * The tester constructs a Picture object and invokes the explore method.
-   */
-  public static void main( String args[]) {
-    Picture pic = new Picture("images/beach.jpg");
-    pic.explore();
   }
 }

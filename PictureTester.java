@@ -207,8 +207,9 @@ public class PictureTester {
   private static void testChange2() {
     Picture pic = new Picture("images/butterfly.jpg");
     pic.explore();
+    pic.getExplorer().repaint();
     pic.change2();
-    pic.explore();
+    pic.getExplorer().setImage(pic);
   }
 
   /**
