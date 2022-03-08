@@ -30,17 +30,10 @@ public class PictureExplorerAndTester extends JFrame implements MouseMotionListe
   private CountDownLatch latch;
   private boolean inputActive = false;
   
-  private JLabel colLabel;
-  private JButton colPrevButton;
-  private JButton rowPrevButton;
-  private JButton colNextButton;
-  private JButton rowNextButton;
-  private JLabel rowLabel;
-  private JTextField colValue;
-  private JTextField rowValue;
-  private JLabel rValue;
-  private JLabel gValue;
-  private JLabel bValue;
+  private JLabel colLabel, rowLabel;
+  private JButton colPrevButton, rowPrevButton, colNextButton, rowNextButton;
+  private JTextField colValue, rowValue;
+  private JLabel rValue, gValue, bValue;
   private JLabel colorLabel;
   private JPanel colorPanel;
 
@@ -52,52 +45,29 @@ public class PictureExplorerAndTester extends JFrame implements MouseMotionListe
   private JMenuItem[] zoomMenuItems = new JMenuItem[levels.length];
   
   private DigitalPicture picture;
-  
   private ImageDisplay imageDisplay;
   
   private double zoomFactor;
+  private int numberBase = 0;
   
-  private int numberBase=0;
-  
-  /**
-   * Constructs a PictureExplorer object.
-   * 
-   * @param picture  the picture to explore
-   */
   public PictureExplorerAndTester(DigitalPicture picture) {
-    this.picture=picture;
-    zoomFactor=1;
+    this.picture = picture;
+    zoomFactor = 1;
     createWindow();
-  }
-  
-  /**
-   * Changes the number system to start at one.
-   */
-  public void changeToBaseOne() {
-    numberBase = 1;
   }
   
   public Color inputColor() {
       return ColorChooser.pickAColor();
   }
 
-  /**
-   * Creates and initializes the picture frame
-   */
   private void createAndInitPictureFrame() {
-    setResizable(true);  // allows the user to resize it
-    getContentPane().setLayout(new BorderLayout()); // uses border layout
-    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // when closed stop
+    setResizable(true);
+    getContentPane().setLayout(new BorderLayout());
+    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     setTitle(picture.getTitle());
-    PictureExplorerFocusTraversalPolicy newPolicy = new PictureExplorerFocusTraversalPolicy();
-    setFocusTraversalPolicy(newPolicy);
   }
   
-  /**
-   * Creates the menu bar, menus, and menu items
-   */
   private void setUpMenuBar() {
-    // creates menu
     menuBar = new JMenuBar();
     zoomMenu = new JMenu("Zoom");
     for (int levelIndex = 0; levelIndex < levels.length; levelIndex++) {
@@ -108,7 +78,6 @@ public class PictureExplorerAndTester extends JFrame implements MouseMotionListe
     }
     menuBar.add(zoomMenu);
 
-    // tester bar
     JMenu testMenu = new JMenu("Test Method");
     String[][] methods = {{"testZeroBlue", "testKeepOnlyBlue", "testNegate", "testGrayscale", "testFixUnderwater"}, {"testMirrorVerticalLeftToRight", "testMirrorVerticalRightToLeft", "testMirrorHorizontalTopToBottom", "testMirrorHorizontalBottomToTop", "testMirrorDiagonal"}, {"testMirrorTemple", "testMirrorArms", "testMirrorSwan"}, {"testChange1", "testChange2"}};
     String[] labs = {"6.C Lab", "6.D Lab", "6.E Lab", "6.F Lab"};
@@ -131,9 +100,6 @@ public class PictureExplorerAndTester extends JFrame implements MouseMotionListe
     setJMenuBar(menuBar);
   }
   
-  /**
-   * Creates and initializes the scrolling image
-   */
   private void createAndInitScrollingImage() {
     scrollPane = new JScrollPane();
     
@@ -151,9 +117,6 @@ public class PictureExplorerAndTester extends JFrame implements MouseMotionListe
     createAndInitScrollingImage();
   }
   
-  /**
-   * Creates the JFrame and sets everything up.
-   */
   private void createWindow() {
     createAndInitPictureFrame();
     setUpMenuBar();
@@ -164,18 +127,13 @@ public class PictureExplorerAndTester extends JFrame implements MouseMotionListe
     String pictureName = picture.getFileName().substring(picture.getFileName().lastIndexOf("/") + 1);
     log("Viewing " + pictureName);
 
-    pictureFrame.pack();
-    pictureFrame.setVisible(true);
+    pack();
+    setVisible(true);
   }
   
-  /**
-   * Sets up the next and previous buttons for the pixel location information.
-   */
   private void setUpNextAndPreviousButtons() {
-    Icon prevIcon = new ImageIcon(DigitalPicture.class.getResource("leftArrow.gif"), 
-                                  "previous index");
-    Icon nextIcon = new ImageIcon(DigitalPicture.class.getResource("rightArrow.gif"), 
-                                  "next index");
+    Icon prevIcon = new ImageIcon(DigitalPicture.class.getResource("leftArrow.gif"), "previous index");
+    Icon nextIcon = new ImageIcon(DigitalPicture.class.getResource("rightArrow.gif"), "next index");
 
     colPrevButton = new JButton(prevIcon);
     colNextButton = new JButton(nextIcon);
@@ -235,12 +193,6 @@ public class PictureExplorerAndTester extends JFrame implements MouseMotionListe
     });
   }
   
-  /**
-   * Creates the pixel location panel.
-   * 
-   * @param labelFont  the font for the labels
-   * @return           the location panel
-   */
   public JPanel createLocationPanel(Font labelFont) {
     JPanel locationPanel = new JPanel();
     locationPanel.setLayout(new FlowLayout());
@@ -250,38 +202,26 @@ public class PictureExplorerAndTester extends JFrame implements MouseMotionListe
     colLabel = new JLabel("Column:");
     
     colValue = new JTextField(Integer.toString(colIndex + numberBase),6);
-    colValue.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        displayPixelInformation(colValue.getText(),rowValue.getText());
-      }
-    });
     rowValue = new JTextField(Integer.toString(rowIndex + numberBase),6);
-    rowValue.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        displayPixelInformation(colValue.getText(),rowValue.getText());
-      }
-    });
+    for (JTextField value : new JTextField[] {colValue, rowValue}) {
+      value.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          displayPixelInformation(colValue.getText(),rowValue.getText());
+        }
+      });
+    }
     
     setUpNextAndPreviousButtons();
     
-    colLabel.setFont(labelFont);
-    rowLabel.setFont(labelFont);
-    colValue.setFont(labelFont);
-    rowValue.setFont(labelFont);
+    for (Component comp : new Component[] {colLabel, rowLabel, colValue, rowValue}) {
+      comp.setFont(labelFont);
+    }
     
-    hBox.add(Box.createHorizontalGlue());
-    hBox.add(rowLabel);
-    hBox.add(rowPrevButton);
-    hBox.add(rowValue);
-    hBox.add(rowNextButton);
-    hBox.add(Box.createHorizontalStrut(10));
-    hBox.add(colLabel);
-    hBox.add(colPrevButton);
-    hBox.add(colValue);
-    hBox.add(colNextButton);
+    for (Component comp : new Component[] {Box.createHorizontalGlue(), rowLabel, rowPrevButton, rowValue, rowNextButton, Box.createHorizontalStrut(10), colLabel, colPrevButton, colValue, colNextButton}) {
+      hBox.add(comp);
+    }
     locationPanel.add(hBox);
     hBox.add(Box.createHorizontalGlue());
-    
     return locationPanel;
   }
 
@@ -299,7 +239,7 @@ public class PictureExplorerAndTester extends JFrame implements MouseMotionListe
         }
       }
     });
-    pictureFrame.getContentPane().add(inputPane, BorderLayout.EAST);
+    getContentPane().add(inputPane, BorderLayout.EAST);
   }
 
   public void log(String s) {
@@ -310,7 +250,7 @@ public class PictureExplorerAndTester extends JFrame implements MouseMotionListe
   public String input(String prompt) {
     log(prompt);
     inputActive = true;
-    pictureFrame.pack();
+    pack();
 
     try {
       latch.await();
@@ -346,74 +286,50 @@ public class PictureExplorerAndTester extends JFrame implements MouseMotionListe
       return FileChooser.pickAFile();
   }
   
-  /**
-   * Creates the color information panel.
-   * 
-   * @param labelFont  the font to use for labels
-   * @return           the color information panel
-   */
   private JPanel createColorInfoPanel(Font labelFont) {
     JPanel colorInfoPanel = new JPanel();
     colorInfoPanel.setLayout(new FlowLayout());
     
-    Pixel pixel = new Pixel(picture,colIndex,rowIndex);
-    
+    Pixel pixel = new Pixel(picture, colIndex, rowIndex);
+
     rValue = new JLabel("R: " + pixel.getRed());
     gValue = new JLabel("G: " + pixel.getGreen());
     bValue = new JLabel("B: " + pixel.getBlue());
+    JLabel[] colorValueLabels = {rValue, gValue, bValue};
     
     colorLabel = new JLabel("Color at location: ");
+    colorLabel.setFont(labelFont);
+
     colorPanel = new JPanel();
-    colorPanel.setBorder(new LineBorder(Color.black,1));
-    
+    colorPanel.setPreferredSize(new Dimension(25,25));
+    colorPanel.setBorder(new LineBorder(Color.black, 1));
     colorPanel.setBackground(pixel.getColor());
     
-    rValue.setFont(labelFont);
-    gValue.setFont(labelFont);
-    bValue.setFont(labelFont);
-    colorLabel.setFont(labelFont);
-    colorPanel.setPreferredSize(new Dimension(25,25));
-    
-    colorInfoPanel.add(rValue);
-    colorInfoPanel.add(gValue);
-    colorInfoPanel.add(bValue);
+    for (JLabel label : colorValueLabels) {
+      label.setFont(labelFont);
+      colorInfoPanel.add(label);
+    }
     colorInfoPanel.add(colorLabel);
     colorInfoPanel.add(colorPanel);
     
     return colorInfoPanel; 
   }
   
-  /**
-   * Creates the North JPanel with all the pixel location and color information.
-   */
   private void createInfoPanel() {
-    // creates the info panel and set the layout
     JPanel infoPanel = new JPanel();
     infoPanel.setLayout(new BorderLayout());
-    
-    Font largerFont = new Font(infoPanel.getFont().getName(),
-                               infoPanel.getFont().getStyle(), 14);
-    
+    Font largerFont = new Font(infoPanel.getFont().getName(), infoPanel.getFont().getStyle(), 14);
     JPanel locationPanel = createLocationPanel(largerFont);
-    
     JPanel colorInfoPanel = createColorInfoPanel(largerFont);
-    
     infoPanel.add(BorderLayout.NORTH,locationPanel);
     infoPanel.add(BorderLayout.SOUTH,colorInfoPanel); 
-    
-    pictureFrame.getContentPane().add(BorderLayout.NORTH,infoPanel);
+    getContentPane().add(BorderLayout.NORTH,infoPanel);
   } 
-  
-  /**
-   * Checks that the current position is in the viewing area and if
-   * not scrolls to center the current position if possible.
-   */
+
   public void checkScroll() {
-    // gets the x and y position in pixels
     int xPos = (int) (colIndex * zoomFactor); 
     int yPos = (int) (rowIndex * zoomFactor); 
     
-    // only does this if the image is larger than normal
     if (zoomFactor > 1) {
       JViewport viewport = scrollPane.getViewport();
       Rectangle rect = viewport.getViewRect();
@@ -439,72 +355,30 @@ public class PictureExplorerAndTester extends JFrame implements MouseMotionListe
     }
   }
   
-  /**
-   * Zooms in the on picture by scaling the image.  It is extremely memory intensive.
-   * 
-   * @param factor  the amount to zoom by
-   */
   public void zoom(double factor) {
-    // saves the current zoom factor
     zoomFactor = factor;
     
-    // calculates the new width and height and get an image that size
     int width = (int) (picture.getWidth()*zoomFactor);
     int height = (int) (picture.getHeight()*zoomFactor);
     BufferedImage bimg = picture.getBufferedImage();
     
-    // sets the scroll image icon to the new image
     imageDisplay.setImage(bimg.getScaledInstance(width, height, Image.SCALE_DEFAULT));
     imageDisplay.setCurrentX((int) (colIndex * zoomFactor));
     imageDisplay.setCurrentY((int) (rowIndex * zoomFactor));
     imageDisplay.revalidate();
-    checkScroll();  // checks if need to reposition scroll
+    checkScroll();
   }
-  
-  /**
-   * Repaints the image on the scrollpane.  
-   */
-  public void repaint() {
-    pictureFrame.repaint();
-  }
-  
-  //****************************************//
-  //               Event Listeners          //
-  //****************************************//
-  
-  /**
-   * Called when the mouse is dragged (button held down and moved)
-   * 
-   * @param e  the mouse event
-   */
+
   public void mouseDragged(MouseEvent e) {
     displayPixelInformation(e);
   }
+
+  public void mouseMoved(MouseEvent e) {}
   
-  /**
-   * Checks if the given x and y are in the picture.
-   * 
-   * @param column  the horizontal value
-   * @param row     the vertical value
-   * @return        true if the row and column are in the picture;
-   *                false otherwise
-   */
   private boolean isLocationInPicture(int column, int row) {
-    boolean result = false; // the default is false
-    if (column >= 0 && column < picture.getWidth() &&
-        row >= 0 && row < picture.getHeight())
-      result = true;
-    
-    return result;
+    return column >= 0 && column < picture.getWidth() && row >= 0 && row < picture.getHeight();
   }
   
-  /**
-   * Displays the pixel information from the passed x and y but
-   * also converts x and y from strings.
-   * 
-   * @param xString  the x value as a string from the user
-   * @param yString  the y value as a string from the user
-   */
   public void displayPixelInformation(String xString, String yString) {
     int x = -1;
     int y = -1;
@@ -513,31 +387,19 @@ public class PictureExplorerAndTester extends JFrame implements MouseMotionListe
       x = x - numberBase;
       y = Integer.parseInt(yString);
       y = y - numberBase;
-    } catch (Exception ex) {
-    }
+    } catch (Exception ex) { }
     
     if (x >= 0 && y >= 0) {
       displayPixelInformation(x,y);
     }
   }
   
-  /**
-   * Displays pixel information for the passed x and y.
-   * 
-   * @param pictureX  the x value in the picture
-   * @param pictureY  the y value in the picture
-   */
   private void displayPixelInformation(int pictureX, int pictureY) {
-    // checks that this x and y are in range
     if (isLocationInPicture(pictureX, pictureY)) {
-      // saves the current x and y index
       colIndex = pictureX;
       rowIndex = pictureY;
-      
-      // gets the pixel at the x and y
       Pixel pixel = new Pixel(picture,colIndex,rowIndex);
       
-      // sets the values based on the pixel
       colValue.setText(Integer.toString(colIndex  + numberBase));
       rowValue.setText(Integer.toString(rowIndex + numberBase));
       rValue.setText("R: " + pixel.getRed());
@@ -548,32 +410,14 @@ public class PictureExplorerAndTester extends JFrame implements MouseMotionListe
       clearInformation();
     }
     
-    // notifies the image display of the current x and y
     imageDisplay.setCurrentX((int) (colIndex * zoomFactor));
     imageDisplay.setCurrentY((int) (rowIndex * zoomFactor));
   }
   
-  /**
-   * Displays pixel information based on a mouse event.
-   * 
-   * @param e  a mouse event
-   */
   private void displayPixelInformation(MouseEvent e) {
-    // gets the cursor x and y
-    int cursorX = e.getX();
-    int cursorY = e.getY();
-    
-    // gets the x and y in the original (not scaled image)
-    int pictureX = (int) (cursorX / zoomFactor + numberBase);
-    int pictureY = (int) (cursorY / zoomFactor + numberBase);
-    
-    // displays the information for this x and y
-    displayPixelInformation(pictureX,pictureY);
+    displayPixelInformation((int) (e.getY() / zoomFactor + numberBase), (int) (e.getX() / zoomFactor + numberBase));
   }
   
-  /**
-   * Clears the labels and current color and resets the current index to -1.
-   */
   private void clearInformation() {
     colValue.setText("N/A");
     rowValue.setText("N/A");
@@ -585,125 +429,46 @@ public class PictureExplorerAndTester extends JFrame implements MouseMotionListe
     rowIndex = -1;
   }
   
-  /**
-   * Called when the mouse is moved with no buttons down.
-   * 
-   * @param e  the mouse event
-   */
-  public void mouseMoved(MouseEvent e)
-  {}
-  
-  /**
-   * Called when the mouse is clicked.
-   * 
-   * @param e  the mouse event
-   */
   public void mouseClicked(MouseEvent e) {
     displayPixelInformation(e);
   }
   
-  /**
-   * Called when the mouse button is pushed down.
-   * 
-   * @param e  the mouse event
-   */ 
   public void mousePressed(MouseEvent e) {
     displayPixelInformation(e);
   }
   
-  /**
-   * Called when the mouse button is released.
-   * 
-   * @param e  the mouse event
-   */
-  public void mouseReleased(MouseEvent e)
-  {}
+  public void mouseReleased(MouseEvent e) {}
+  public void mouseEntered(MouseEvent e) {}
+  public void mouseExited(MouseEvent e) {}
   
-  /**
-   * Called when the component is entered (mouse moves over it).
-   * 
-   * @param e  the mouse event
-   */
-  public void mouseEntered(MouseEvent e)
-  {}
-  
-  /**
-   * Called when the mouse moves over the component.
-   * @param e the mouse event
-   */
-  public void mouseExited(MouseEvent e)
-  {}
-  
-  /**
-   * Enables all menu commands.
-   */
   private void enableZoomItems() {
     for (JMenuItem item : zoomMenuItems) {
         item.setEnabled(true);
     }
   }
   
-  /**
-   * Controls the zoom menu bar.
-   *
-   * @param a  the ActionEvent 
-   */
   public void actionPerformed(ActionEvent a) {
     if (a.getActionCommand().equals("Update")) {
         this.repaint();
     } else {
-        try {
-            int zoomLevel = Integer.parseInt(a.getActionCommand().substring(0, a.getActionCommand().indexOf("%")));
-            int zoomLevelIndex = -1;
-            for (int levelIndex = 0; levelIndex < levels.length; levelIndex++) {
-                if (levels[levelIndex] == zoomLevel) {
-                    zoomLevelIndex = levelIndex;
-                    break;
-                }
-            }
-            this.zoom((double) zoomLevel / 100);
-            enableZoomItems();
-            zoomMenuItems[zoomLevelIndex].setEnabled(false);
-        } catch (Exception e) {
-            // do nothing
-        }
+      try {
+          int zoomLevel = Integer.parseInt(a.getActionCommand().substring(0, a.getActionCommand().indexOf("%")));
+          int zoomLevelIndex = -1;
+          for (int levelIndex = 0; levelIndex < levels.length; levelIndex++) {
+              if (levels[levelIndex] == zoomLevel) {
+                  zoomLevelIndex = levelIndex;
+                  break;
+              }
+          }
+          this.zoom((double) zoomLevel / 100);
+          enableZoomItems();
+          zoomMenuItems[zoomLevelIndex].setEnabled(false);
+      } catch (Exception e) {}
     }
   }
   
-  /**
-   * PictureExplorerFocusTraversalPolicy establishes the focus for the textfields.
-   */
-  private class PictureExplorerFocusTraversalPolicy extends FocusTraversalPolicy {
-    /**
-     * Gets the next component for focus.
-     */
-    public Component getComponentAfter(Container focusCycleRoot, Component aComponent) {
-      if (aComponent.equals(colValue))
-        return rowValue;
-      else 
-        return colValue;
-    }
-    
-    /**
-     * Gets the previous component for focus.
-     */
-    public Component getComponentBefore(Container focusCycleRoot, Component aComponent) {
-      if (aComponent.equals(colValue))
-        return rowValue;
-      else 
-        return colValue;
-    }
-    
-    public Component getDefaultComponent(Container focusCycleRoot) {
-      return colValue;
-    }
-    
-    public Component getLastComponent(Container focusCycleRoot) {
-      return rowValue;
-    }
-    
-    public Component getFirstComponent(Container focusCycleRoot) {
-      return colValue;
-    }
+  public static void main(String[] arg0) {
+    Picture pic = new Picture("images/beach.jpg");
+    pic.explore();
   }
 }
