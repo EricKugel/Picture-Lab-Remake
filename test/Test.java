@@ -8,7 +8,10 @@ import java.util.concurrent.CountDownLatch;
 
 public class Test extends JFrame {
     private JPanel output = new JPanel();
-    private JPanel input = new JPanel();
+    private JTextArea input = new JTextArea(10, 100);
+
+    private CountDownLatch latch = new CountDownLatch(1);
+    private boolean inputActive = false;
 
     public Test() {
         setTitle("Test");
@@ -18,8 +21,20 @@ public class Test extends JFrame {
         setVisible(true);
         pack();
 
+        input.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    if (inputActive) {
+                        latch.countDown();
+                    }
+                }
+            }
+        });
+
         output("Hello world");
+        System.out.println(input("Input a name"));
         output("Hi " + input("Input a name"));
+        pack();
     }
 
     private void initGUI() {
@@ -27,7 +42,6 @@ public class Test extends JFrame {
         JScrollPane outputPane = new JScrollPane(output, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         add(outputPane, BorderLayout.WEST);
 
-        input.setPreferredSize(new Dimension(200, 200));
         JScrollPane inputPane = new JScrollPane(input, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         add(inputPane, BorderLayout.EAST);
     }
@@ -41,17 +55,12 @@ public class Test extends JFrame {
     }
 
     private String input(String prompt) {
-        addJLabel(input, prompt);
-        JTextField inputField = new JTextField(100);
-        input.add(inputField);
+        input.append(prompt);
+        input.append("\n");
+        input.setCaretPosition(input.getText().length());
         pack();
 
-        CountDownLatch latch = new CountDownLatch(1);
-        inputField.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                latch.countDown();
-            }
-        });
+        inputActive = true;
 
         try {
             latch.await();
@@ -59,28 +68,13 @@ public class Test extends JFrame {
             e.printStackTrace();
         }
 
-        return inputField.getText().strip();
+        latch = new CountDownLatch(1);
+
+        inputActive = false;
+        return input.getText().substring(input.getText().lastIndexOf("\n"));
     }
 
     public static void main(String[] arg0) {
         new Test();
     }
-}
-
-class InputField extends Thread {
-    private CountDownLatch latch;
-    private JTextField textField;
-
-    public InputField(CountDownLatch latch, JTextField textField) {
-        this.latch = latch;
-        this.textField = textField;
-    }
-
-    public void run() {
-        textField.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                latch.countDown();
-            }
-        });
-    }   
 }

@@ -16,7 +16,7 @@ public class InputField extends Thread {
     }
 
     public String getText() {
-        return textField.getText().strip();
+        return textField.getText().trim();
     }
 
     public JTextField getTextField() {
