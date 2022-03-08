@@ -21,12 +21,14 @@ import javax.swing.border.*;
  * @author Barb Ericson ericson@cc.gatech.edu
  * @author Eric Kugel erickugel713@gmail.com
  */
-public class PictureExplorerAndTester implements MouseMotionListener, ActionListener, MouseListener {
+public class PictureExplorerAndTester extends JFrame implements MouseMotionListener, ActionListener, MouseListener {
   private int rowIndex = 0;
   private int colIndex = 0;
   
-  private JFrame pictureFrame;
   private JScrollPane scrollPane;
+  private JTextArea inputArea;
+  private CountDownLatch latch;
+  private boolean inputActive = false;
   
   private JLabel colLabel;
   private JButton colPrevButton;
@@ -42,7 +44,7 @@ public class PictureExplorerAndTester implements MouseMotionListener, ActionList
   private JLabel colorLabel;
   private JPanel colorPanel;
 
-  private JPanel inputPanel;
+  private JScrollPane inputPane;
   
   private JMenuBar menuBar;
   private JMenu zoomMenu;
@@ -75,15 +77,6 @@ public class PictureExplorerAndTester implements MouseMotionListener, ActionList
     numberBase = 1;
   }
   
-  /**
-   * Sets the title of the frame.
-   * 
-   * @param title  the title to use in the JFrame
-   */
-  public void setTitle(String title) {
-    pictureFrame.setTitle(title);
-  }
-  
   public Color inputColor() {
       return ColorChooser.pickAColor();
   }
@@ -92,13 +85,12 @@ public class PictureExplorerAndTester implements MouseMotionListener, ActionList
    * Creates and initializes the picture frame
    */
   private void createAndInitPictureFrame() {
-    pictureFrame = new JFrame(); // creates the JFrame
-    pictureFrame.setResizable(true);  // allows the user to resize it
-    pictureFrame.getContentPane().setLayout(new BorderLayout()); // uses border layout
-    pictureFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // when closed stop
-    pictureFrame.setTitle(picture.getTitle());
+    setResizable(true);  // allows the user to resize it
+    getContentPane().setLayout(new BorderLayout()); // uses border layout
+    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // when closed stop
+    setTitle(picture.getTitle());
     PictureExplorerFocusTraversalPolicy newPolicy = new PictureExplorerFocusTraversalPolicy();
-    pictureFrame.setFocusTraversalPolicy(newPolicy);
+    setFocusTraversalPolicy(newPolicy);
   }
   
   /**
@@ -136,13 +128,8 @@ public class PictureExplorerAndTester implements MouseMotionListener, ActionList
       testMenu.add(labMenu);
     }
     menuBar.add(testMenu);
-    pictureFrame.setJMenuBar(menuBar);
+    setJMenuBar(menuBar);
   }
-
-  private void dispose() {
-    pictureFrame.dispose();
-  }
-  
   
   /**
    * Creates and initializes the scrolling image
@@ -156,7 +143,7 @@ public class PictureExplorerAndTester implements MouseMotionListener, ActionList
     imageDisplay.addMouseListener(this);
     imageDisplay.setToolTipText("Click a mouse button on a pixel to see the pixel information");
     scrollPane.setViewportView(imageDisplay);
-    pictureFrame.getContentPane().add(scrollPane, BorderLayout.CENTER);
+    getContentPane().add(scrollPane, BorderLayout.CENTER);
   }
 
   public void setImage(Picture picture) {
@@ -299,32 +286,41 @@ public class PictureExplorerAndTester implements MouseMotionListener, ActionList
   }
 
   public void createAndInitInputBox() {
-    inputPanel = new JPanel();
-    inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
-    inputPanel.setPreferredSize(new Dimension(200, 1));
-    JScrollPane inputScrollPane = new JScrollPane(inputPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    pictureFrame.getContentPane().add(inputScrollPane, BorderLayout.EAST);
+    inputArea = new JTextArea(10, 20);
+    inputPane = new JScrollPane(inputArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+    latch = new CountDownLatch(1);
+    inputArea.addKeyListener(new KeyAdapter() {
+      public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+          if (inputActive) {
+            latch.countDown();
+          }
+        }
+      }
+    });
+    pictureFrame.getContentPane().add(inputPane, BorderLayout.EAST);
   }
 
   public void log(String s) {
-    inputPanel.add(new JLabel("<html>" + s + "</html>"));
+    inputArea.append(s + "\n");
+    inputArea.setCaretPosition(inputArea.getText().length());
   }
 
   public String input(String prompt) {
     log(prompt);
-    CountDownLatch latch = new CountDownLatch(1);
-    JTextField textField = new JTextField();
-    InputField inputField = new InputField(latch, textField);
-    inputField.start();
-    inputPanel.add(textField);
-    repaint();
+    inputActive = true;
+    pictureFrame.pack();
+
     try {
       latch.await();
     } catch(Exception e) {
       e.printStackTrace();
     }
-    return inputField.getText();
-    // return "30";
+    latch = new CountDownLatch(1);
+    inputActive = false;
+
+    return inputArea.getText().substring(inputArea.getText().lastIndexOf("\n"));
   }
 
   public double inputDouble(String prompt) {
