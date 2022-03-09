@@ -252,11 +252,15 @@ public class PictureExplorerAndTester extends JFrame implements MouseMotionListe
     inputActive = true;
     pack();
 
-    try {
-      latch.await();
-    } catch(Exception e) {
-      e.printStackTrace();
-    }
+    new Runnable() {
+      public void run() {
+        try {
+          latch.await();
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    }.run();
     latch = new CountDownLatch(1);
     inputActive = false;
 
