@@ -14,27 +14,26 @@ public class Test extends JFrame {
     private boolean inputActive = false;
 
     public Test() {
-        setTitle("Test");
-        setResizable(false);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        initGUI();
-        setVisible(true);
-        pack();
+        new Thread() {
+            public void run() {
+                setTitle("Test");
+                setResizable(false);
+                setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+                initGUI();
+                setVisible(true);
+                pack();
 
-        input.addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    if (inputActive) {
-                        latch.countDown();
+                input.addKeyListener(new KeyAdapter() {
+                    public void keyPressed(KeyEvent e) {
+                        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                            if (inputActive) {
+                                latch.countDown();
+                            }
+                        }
                     }
-                }
+                });
             }
-        });
-
-        output("Hello world");
-        System.out.println(input("Input a name"));
-        output("Hi " + input("Input a name"));
-        pack();
+        }.start();
     }
 
     private void initGUI() {
@@ -54,7 +53,7 @@ public class Test extends JFrame {
         addJLabel(output, s);
     }
 
-    private String input(String prompt) {
+    public String input(String prompt) {
         input.append(prompt);
         input.append("\n");
         input.setCaretPosition(input.getText().length());

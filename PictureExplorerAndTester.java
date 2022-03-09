@@ -6,6 +6,8 @@ import java.util.concurrent.CountDownLatch;
 
 import javax.swing.border.*;
 
+import test.Test;
+
 /**
  * Displays a picture and lets you explore the picture by displaying the row, column, red,
  * green, and blue values of the pixel at the cursor when you click a mouse button or
@@ -248,23 +250,25 @@ public class PictureExplorerAndTester extends JFrame implements MouseMotionListe
   }
 
   public String input(String prompt) {
-    log(prompt);
-    inputActive = true;
-    pack();
+    // log(prompt);
+    // inputActive = true;
+    // pack();
 
-    new Runnable() {
-      public void run() {
-        try {
-          latch.await();
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-    }.run();
-    latch = new CountDownLatch(1);
-    inputActive = false;
+    // new Runnable() {
+    //   public void run() {
+    //     try {
+    //       latch.await();
+    //     } catch (Exception e) {
+    //       e.printStackTrace();
+    //     }
+    //   }
+    // }.run();
+    // latch = new CountDownLatch(1);
+    // inputActive = false;
 
-    return inputArea.getText().substring(inputArea.getText().lastIndexOf("\n"));
+    // return inputArea.getText().substring(inputArea.getText().lastIndexOf("\n"));
+    Test test = new Test();
+    return(test.input(prompt));
   }
 
   public double inputDouble(String prompt) {
